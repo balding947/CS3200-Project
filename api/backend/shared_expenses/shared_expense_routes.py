@@ -135,6 +135,8 @@ def create_shared_expense():
         current_app.logger.info("POST /shared-expenses")
 
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
 
         required_fields = ["expense_id", "name", "amount", "date", "paid_by_user_id"]
         for field in required_fields:
@@ -174,13 +176,15 @@ def create_shared_expense():
         cursor.close()
 
 
-@shared_expenses.route("/<int:expense_id>", methods=["PUT"])
+@shared_expenses.route("/update/<int:expense_id>", methods=["PUT"])
 def update_shared_expense(expense_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info(f"PUT /shared-expenses/{expense_id}")
+        current_app.logger.info(f"PUT /shared-expenses/update/{expense_id}")
 
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
 
         cursor.execute(
             "SELECT expense_id FROM shared_expenses WHERE expense_id = %s",
@@ -214,11 +218,11 @@ def update_shared_expense(expense_id):
         cursor.close()
 
 
-@shared_expenses.route("/<int:expense_id>", methods=["DELETE"])
+@shared_expenses.route("/delete/<int:expense_id>", methods=["DELETE"])
 def delete_shared_expense(expense_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info(f"DELETE /shared-expenses/{expense_id}")
+        current_app.logger.info(f"DELETE /shared-expenses/delete/{expense_id}")
 
         cursor.execute(
             "SELECT expense_id FROM shared_expenses WHERE expense_id = %s",
