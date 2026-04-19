@@ -102,28 +102,27 @@ def create_category():
         if not data:
             return jsonify({"error": "Request body must be valid JSON"}), 400
 
-        required_fields = ["category_id", "name", "status"]
+        required_fields = ["name", "status"]
         for field in required_fields:
             if field not in data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400
 
         cursor.execute("""
             INSERT INTO categories (
-                category_id,
                 name,
                 status
             )
-            VALUES (%s, %s, %s)
+            VALUES (%s, %s)
         """, (
-            data["category_id"],
             data["name"],
             data["status"]
         ))
 
         get_db().commit()
+
         return jsonify({
             "message": "Category created successfully",
-            "category_id": data["category_id"]
+            "category_id": cursor.lastrowid
         }), 201
 
     except Error as e:

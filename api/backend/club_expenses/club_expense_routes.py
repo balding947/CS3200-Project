@@ -166,7 +166,6 @@ def get_club_expense(expense_id):
 
 
 @club_expenses.route("/", methods=["POST"])
-@club_expenses.route("/", methods=["POST"])
 def create_club_expense():
     cursor = get_db().cursor(dictionary=True)
     try:

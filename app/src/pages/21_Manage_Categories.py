@@ -64,9 +64,7 @@ with st.form("add_category_form"):
         if not new_name:
             st.error("Please enter a category name.")
         else:
-            next_id = max([c["category_id"] for c in categories], default=0) + 1
             payload = {
-                "category_id": next_id,
                 "name": new_name,
                 "status": new_status
             }

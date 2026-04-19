@@ -129,7 +129,6 @@ def get_shared_expense(expense_id):
 
 
 @shared_expenses.route("/", methods=["POST"])
-@shared_expenses.route("/", methods=["POST"])
 def create_shared_expense():
     cursor = get_db().cursor(dictionary=True)
     try:
