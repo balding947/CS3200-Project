@@ -67,7 +67,7 @@ def get_all_shared_expenses():
         return jsonify(expenses), 200
 
     except Error as e:
-        current_app.logger.error(f"Database error in get_all_shared_expenses: {e}")
+        current_app.logger.error(f"Error in get_all_shared_expenses: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
@@ -122,7 +122,7 @@ def get_shared_expense(expense_id):
         return jsonify(expense), 200
 
     except Error as e:
-        current_app.logger.error(f"Database error in get_shared_expense: {e}")
+        current_app.logger.error(f"Error in get_shared_expense: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
@@ -170,7 +170,7 @@ def create_shared_expense():
         }), 201
 
     except Error as e:
-        current_app.logger.error(f"Database error in create_shared_expense: {e}")
+        current_app.logger.error(f"Error in create_shared_expense: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
@@ -212,7 +212,7 @@ def update_shared_expense(expense_id):
         return jsonify({"message": "Shared expense updated successfully"}), 200
 
     except Error as e:
-        current_app.logger.error(f"Database error in update_shared_expense: {e}")
+        current_app.logger.error(f"Error in update_shared_expense: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
@@ -238,7 +238,7 @@ def delete_shared_expense(expense_id):
         return jsonify({"message": "Shared expense deleted successfully"}), 200
 
     except Error as e:
-        current_app.logger.error(f"Database error in delete_shared_expense: {e}")
+        current_app.logger.error(f"Error in delete_shared_expense: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
