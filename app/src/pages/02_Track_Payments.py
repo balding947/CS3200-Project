@@ -43,12 +43,19 @@ else:
                         with col3:
                             if not split["is_paid"]:
                                 if st.button("Mark Paid", key=f"pay_{split['split_id']}"):
-                                    update = requests.put(
-                                        f"{API_URL}/shared-expenses/update/{expense['expense_id']}",
-                                        json={"is_paid": 1}
-                                    )
-                                    st.success("Marked as paid!")
-                                    st.rerun()
+                                    try:
+                                        update = requests.put(
+                                            f"{API_URL}/expense-splits/update/{split['split_id']}",
+                                            json={"is_paid": 1}
+                                        )
+
+                                        if update.status_code == 200:
+                                            st.success("Marked as paid!")
+                                            st.rerun()
+                                        else:
+                                            st.error(f"Could not mark as paid: {update.json().get('error')}")
+                                    except Exception as e:
+                                        st.error(f"Could not update payment status: {e}")
                 else:
                     st.info("No splits recorded for this expense.")
 
