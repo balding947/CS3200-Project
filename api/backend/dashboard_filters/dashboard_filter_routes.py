@@ -100,22 +100,20 @@ def create_dashboard_filter():
         if not data:
             return jsonify({"error": "Request body must be valid JSON"}), 400
 
-        required_fields = ["filter_id", "filter_type", "is_active", "user_id"]
+        required_fields = ["filter_type", "is_active", "user_id"]
         for field in required_fields:
             if field not in data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400
 
         cursor.execute("""
             INSERT INTO dashboard_filters (
-                filter_id,
                 filter_type,
                 value,
                 is_active,
                 user_id
             )
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
         """, (
-            data["filter_id"],
             data["filter_type"],
             data.get("value"),
             data["is_active"],
@@ -123,9 +121,10 @@ def create_dashboard_filter():
         ))
 
         get_db().commit()
+
         return jsonify({
             "message": "Dashboard filter created successfully",
-            "filter_id": data["filter_id"]
+            "filter_id": cursor.lastrowid
         }), 201
 
     except Error as e:

@@ -96,9 +96,7 @@ with st.form("add_filter_form"):
         if not filter_value:
             st.error("Please enter a filter value.")
         else:
-            next_id = max([f["filter_id"] for f in filters], default=0) + 1
             payload = {
-                "filter_id": next_id,
                 "filter_type": filter_type,
                 "value": filter_value,
                 "is_active": 1 if is_active == "Yes" else 0,
