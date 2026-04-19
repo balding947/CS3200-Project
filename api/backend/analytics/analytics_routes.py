@@ -177,3 +177,46 @@ def shared_expense_patterns():
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
+
+@analytics.route("/support-issues", methods=["GET"])
+def support_issues():
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info("GET /analytics/support-issues")
+
+        status = request.args.get("status")
+
+        query = """
+            SELECT
+                si.issue_id,
+                si.description,
+                si.status,
+                si.created_at,
+                u.name AS submitted_by
+            FROM support_issues si
+            LEFT JOIN users u
+                ON si.submitted_by_user_id = u.user_id
+            WHERE 1=1
+        """
+        params = []
+
+        if status:
+            query += " AND si.status = %s"
+            params.append(status)
+
+        query += " ORDER BY si.created_at DESC"
+
+        cursor.execute(query, params)
+        results = cursor.fetchall()
+
+        for row in results:
+            if row.get("created_at"):
+                row["created_at"] = row["created_at"].isoformat()
+
+        return jsonify(results), 200
+
+    except Error as e:
+        current_app.logger.error(f"Error in support_issues: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
