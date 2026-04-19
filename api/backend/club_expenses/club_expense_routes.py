@@ -166,6 +166,7 @@ def get_club_expense(expense_id):
 
 
 @club_expenses.route("/", methods=["POST"])
+@club_expenses.route("/", methods=["POST"])
 def create_club_expense():
     cursor = get_db().cursor(dictionary=True)
     try:
@@ -176,7 +177,6 @@ def create_club_expense():
             return jsonify({"error": "Request body must be valid JSON"}), 400
 
         required_fields = [
-            "expense_id",
             "description",
             "amount",
             "date",
@@ -191,7 +191,6 @@ def create_club_expense():
 
         query = """
             INSERT INTO club_expenses (
-                expense_id,
                 description,
                 amount,
                 date,
@@ -204,11 +203,10 @@ def create_club_expense():
                 event_id,
                 goal_id
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         cursor.execute(query, (
-            data["expense_id"],
             data["description"],
             data["amount"],
             data["date"],
@@ -223,9 +221,10 @@ def create_club_expense():
         ))
 
         get_db().commit()
+
         return jsonify({
             "message": "Club expense created successfully",
-            "expense_id": data["expense_id"]
+            "expense_id": cursor.lastrowid
         }), 201
 
     except Error as e:

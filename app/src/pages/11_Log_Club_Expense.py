@@ -38,7 +38,6 @@ with st.form("log_club_expense_form"):
             st.error("Please enter a description.")
         else:
             payload = {
-                "expense_id": 999,
                 "description": description,
                 "amount": float(amount),
                 "date": str(date),
