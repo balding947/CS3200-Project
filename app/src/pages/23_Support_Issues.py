@@ -1,5 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
+
 import streamlit as st
 import requests
 from modules.nav import SideBarLinks
@@ -13,7 +14,12 @@ st.title("Support Issues")
 st.write("View and manage app support issues.")
 
 try:
-    all_issues = requests.get(f"{API_URL}/analytics/support-issues").json()
+    response = requests.get(f"{API_URL}/analytics/support-issues")
+    if response.status_code == 200:
+        all_issues = response.json()
+    else:
+        st.error("Could not load support issues.")
+        all_issues = []
 except Exception as e:
     st.error(f"Could not connect to the API: {e}")
     all_issues = []
@@ -49,19 +55,56 @@ else:
 st.write(f"Showing {len(filtered)} issues")
 
 for issue in filtered:
-    with st.expander(f"Issue #{issue['issue_id']} — {issue['description'][:60]}"):
+    description_preview = issue["description"][:60] if issue.get("description") else "No description"
+
+    with st.expander(f"Issue #{issue['issue_id']} — {description_preview}"):
         st.write(f"**Status:** {issue['status']}")
         st.write(f"**Submitted by:** {issue.get('submitted_by', 'N/A')}")
         st.write(f"**Created at:** {issue.get('created_at', 'N/A')}")
+
         col1, col2 = st.columns(2)
+
         with col1:
             if issue["status"] == "open":
                 if st.button("Mark In Progress", key=f"prog_{issue['issue_id']}"):
-                    st.success("Status updated to In Progress!")
+                    try:
+                        update = requests.put(
+                            f"{API_URL}/support-issues/update/{issue['issue_id']}",
+                            json={"status": "in_progress"}
+                        )
+
+                        if update.status_code == 200:
+                            st.success("Status updated to In Progress!")
+                            st.rerun()
+                        else:
+                            try:
+                                error_message = update.json().get("error", "Unknown error")
+                            except Exception:
+                                error_message = "Unknown error"
+                            st.error(f"Could not update issue: {error_message}")
+                    except Exception as e:
+                        st.error(f"Could not connect to the API: {e}")
+
         with col2:
             if issue["status"] in ["open", "in_progress"]:
                 if st.button("Mark Resolved", key=f"res_{issue['issue_id']}"):
-                    st.success("Status updated to Resolved!")
+                    try:
+                        update = requests.put(
+                            f"{API_URL}/support-issues/update/{issue['issue_id']}",
+                            json={"status": "resolved"}
+                        )
+
+                        if update.status_code == 200:
+                            st.success("Status updated to Resolved!")
+                            st.rerun()
+                        else:
+                            try:
+                                error_message = update.json().get("error", "Unknown error")
+                            except Exception:
+                                error_message = "Unknown error"
+                            st.error(f"Could not update issue: {error_message}")
+                    except Exception as e:
+                        st.error(f"Could not connect to the API: {e}")
 
 if st.button("Back to Home"):
     st.switch_page("pages/20_Sofia_Home.py")

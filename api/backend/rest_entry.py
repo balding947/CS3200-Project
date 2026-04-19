@@ -13,6 +13,7 @@ from backend.categories.category_routes import categories
 from backend.dashboard_filters.dashboard_filter_routes import dashboard_filters
 from backend.analytics.analytics_routes import analytics
 from backend.expense_splits.expense_split_routes import expense_splits
+from backend.support_issue.support_issue_routes import support_issues
 
 
 def create_app():
@@ -54,4 +55,5 @@ def create_app():
     app.register_blueprint(dashboard_filters, url_prefix="/dashboard-filters")
     app.register_blueprint(analytics, url_prefix="/analytics")
     app.register_blueprint(expense_splits, url_prefix="/expense-splits")
+    app.register_blueprint(support_issues, url_prefix="/support-issues")
     return app
