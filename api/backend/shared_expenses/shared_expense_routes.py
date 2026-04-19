@@ -129,6 +129,7 @@ def get_shared_expense(expense_id):
 
 
 @shared_expenses.route("/", methods=["POST"])
+@shared_expenses.route("/", methods=["POST"])
 def create_shared_expense():
     cursor = get_db().cursor(dictionary=True)
     try:
@@ -138,24 +139,22 @@ def create_shared_expense():
         if not data:
             return jsonify({"error": "No data provided"}), 400
 
-        required_fields = ["expense_id", "name", "amount", "date", "paid_by_user_id"]
+        required_fields = ["name", "amount", "date", "paid_by_user_id"]
         for field in required_fields:
             if field not in data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400
 
         query = """
             INSERT INTO shared_expenses (
-                expense_id,
                 name,
                 amount,
                 date,
                 paid_by_user_id,
                 category_id
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s)
         """
         cursor.execute(query, (
-            data["expense_id"],
             data["name"],
             data["amount"],
             data["date"],
@@ -166,7 +165,7 @@ def create_shared_expense():
         get_db().commit()
         return jsonify({
             "message": "Shared expense created successfully",
-            "expense_id": data["expense_id"]
+            "expense_id": cursor.lastrowid
         }), 201
 
     except Error as e:

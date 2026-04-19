@@ -55,7 +55,6 @@ with st.form("add_expense_form"):
             st.error("Please select at least one roommate to split with.")
         else:
             payload = {
-                "expense_id": 999,
                 "name": name,
                 "amount": float(amount),
                 "date": str(date),
