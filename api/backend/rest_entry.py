@@ -11,6 +11,7 @@ from backend.shared_expenses.shared_expense_routes import shared_expenses
 from backend.club_expenses.club_expense_routes import club_expenses
 from backend.categories.category_routes import categories
 from backend.dashboard_filters.dashboard_filter_routes import dashboard_filters
+from backend.analytics.analytics_routes import analytics
 
 
 def create_app():
@@ -50,5 +51,6 @@ def create_app():
     app.register_blueprint(club_expenses, url_prefix="/club-expenses")
     app.register_blueprint(categories, url_prefix="/categories")
     app.register_blueprint(dashboard_filters, url_prefix="/dashboard-filters")
+    app.register_blueprint(analytics, url_prefix="/analytics")
 
     return app
