@@ -4,8 +4,6 @@ import os
 import logging
 
 from backend.db_connection import init_app as init_db
-from backend.simple.simple_routes import simple_routes
-from backend.ngos.ngo_routes import ngos
 from backend.shared_expenses.shared_expense_routes import shared_expenses
 # uncomment these imports as you implement their blueprints and routes
 from backend.club_expenses.club_expense_routes import club_expenses
